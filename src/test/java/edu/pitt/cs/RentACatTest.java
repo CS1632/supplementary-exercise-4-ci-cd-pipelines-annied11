@@ -1,13 +1,16 @@
 package edu.pitt.cs;
 
-import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.mockito.*;
+import org.mockito.Mockito;
+
+
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RentACatTest {
@@ -27,23 +30,33 @@ public class RentACatTest {
 
 	@Before
 	public void setUp() throws Exception {
-		// Turn on automatic bug injection in the Cat class, to emulate a buggy Cat.
-		// Your unit tests should work regardless of these bugs.
+		// Config.setBuggyRentACat(true);
+
+
 		Cat.bugInjectionOn = true;
-
-		// INITIALIZE THE TEST FIXTURE
-		// 1. Create a new RentACat object and assign to r
 		r = RentACat.createInstance();
+	
+		// Creating mock instances for Cat objects
+		c1 = Mockito.mock(Cat.class);
+		Mockito.when(c1.getId()).thenReturn(1);
+		Mockito.when(c1.getName()).thenReturn("Jennyanydots");
+		Mockito.when(c1.getRented()).thenReturn(false);
 
-		// 2. Create an unrented Cat with ID 1 and name "Jennyanydots", assign to c1
-		// TODO: Fill in
+		c2 = Mockito.mock(Cat.class);
+		Mockito.when(c2.getId()).thenReturn(2);
+		Mockito.when(c2.getName()).thenReturn("Old Deuteronomy");
+		Mockito.when(c2.getRented()).thenReturn(false);
 
-		// 3. Create an unrented Cat with ID 2 and name "Old Deuteronomy", assign to c2
-		// TODO: Fill in
+		c3 = Mockito.mock(Cat.class);
+		Mockito.when(c3.getId()).thenReturn(3);
+		Mockito.when(c3.getName()).thenReturn("Mistoffelees");
+		Mockito.when(c3.getRented()).thenReturn(false);
 
-		// 4. Create an unrented Cat with ID 3 and name "Mistoffelees", assign to c3
-		// TODO: Fill in
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
 	}
+	
 
 	@After
 	public void tearDown() throws Exception {
@@ -65,10 +78,12 @@ public class RentACatTest {
 	 * </pre>
 	 */
 
-	@Test
+	 @Test
 	public void testGetCatNullNumCats0() {
-		// TODO
-	}
+		r = RentACat.createInstance(); // Recreate r to make sure it has no cats
+    	assertNull(r.getCat(2));
+}
+	 
 
 	/**
 	 * Test case for Cat getCat(int id).
@@ -83,7 +98,9 @@ public class RentACatTest {
 
 	@Test
 	public void testGetCatNumCats3() {
-		// TODO
+		Cat result = r.getCat(2);
+		assertNotNull(result);
+		assertEquals(2, result.getId());
 	}
 
 	/**
@@ -98,7 +115,8 @@ public class RentACatTest {
 
 	@Test
 	public void testCatAvailableFalseNumCats0() {
-		// TODO
+		r = RentACat.createInstance(); // Recreate r to make sure it has no cats
+		assertFalse(r.catAvailable(2));
 	}
 
 	/**
@@ -115,7 +133,9 @@ public class RentACatTest {
 
 	@Test
 	public void testCatAvailableTrueNumCats3() {
-		// TODO
+		Mockito.when(c3.getRented()).thenReturn(true);
+
+    	assertTrue(r.catAvailable(2));
 	}
 
 	/**
@@ -132,7 +152,9 @@ public class RentACatTest {
 
 	@Test
 	public void testCatAvailableFalseNumCats3() {
-		// TODO
+		Mockito.when(c2.getRented()).thenReturn(true); // Set c2 as rented
+
+    	assertFalse(r.catAvailable(2)); // Since c2 is rented, availability should be false
 	}
 
 	/**
@@ -147,8 +169,11 @@ public class RentACatTest {
 
 	@Test
 	public void testCatExistsFalseNumCats0() {
-		// TODO
+		r = RentACat.createInstance(); // Recreate r to make sure it has no cats
+
+    	assertFalse(r.catExists(2)); // Since there are no cats in r, the return value should be false	
 	}
+	
 
 	/**
 	 * Test case for boolean catExists(int id).
@@ -162,8 +187,9 @@ public class RentACatTest {
 
 	@Test
 	public void testCatExistsTrueNumCats3() {
-		// TODO
+		assertTrue(r.catExists(2)); // Since c2 was added to r in the setUp method, the return value should be true
 	}
+
 
 	/**
 	 * Test case for String listCats().
@@ -177,7 +203,9 @@ public class RentACatTest {
 
 	@Test
 	public void testListCatsNumCats0() {
-		// TODO
+		r = RentACat.createInstance(); // Recreate r to make sure it has no cats
+
+    	assertEquals("", r.listCats()); // Since there are no cats in r, the return value should be an empty string
 	}
 
 	/**
@@ -191,10 +219,33 @@ public class RentACatTest {
 	 * </pre>
 	 */
 
-	@Test
-	public void testListCatsNumCats3() {
-		// TODO
-	}
+	 @Test
+	 public void testListCatsNumCats3() {
+		 // 创建 RentACat 实例
+		 RentACat r = RentACat.createInstance();
+	 
+		 // 创建 Mock 对象
+		 Cat cat1 = mock(Cat.class);
+		 Cat cat2 = mock(Cat.class);
+		 Cat cat3 = mock(Cat.class);
+	 
+		 // 设置 Mock 对象的行为
+		 when(cat1.toString()).thenReturn("ID 1. Jennyanydots");
+		 when(cat2.toString()).thenReturn("ID 2. Old Deuteronomy");
+		 when(cat3.toString()).thenReturn("ID 3. Mistoffelees");
+	 
+		 // 添加 Mock 对象到 RentACat 实例中
+		 r.addCat(cat1);
+		 r.addCat(cat2);
+		 r.addCat(cat3);
+	 
+		 // 构建期望的字符串
+		 String expected = "ID 1. Jennyanydots\nID 2. Old Deuteronomy\nID 3. Mistoffelees\n";
+	 
+		 // 断言
+		 assertEquals(expected, r.listCats());
+	 }
+	 
 
 	/**
 	 * Test case for boolean rentCat(int id).
@@ -208,7 +259,8 @@ public class RentACatTest {
 
 	@Test
 	public void testRentCatFailureNumCats0() {
-		// TODO
+		r = RentACat.createInstance(); // Recreate r to make sure it has no cats
+    	assertFalse(r.rentCat(2)); // Since there are no cats in r, the return value should be false
 	}
 
 	/**
@@ -229,7 +281,23 @@ public class RentACatTest {
 
 	@Test
 	public void testRentCatFailureNumCats3() {
-		// TODO
+		RentACat r = RentACat.createInstance();
+
+		Cat c1 = mock(Cat.class);
+		Cat c2 = mock(Cat.class);
+		Cat c3 = mock(Cat.class);
+
+		when(c2.getRented()).thenReturn(true);
+
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+
+		assertFalse(r.rentCat(2));
+
+		verify(c1, never()).rentCat();
+		verify(c2, never()).rentCat();
+		verify(c3, never()).rentCat();
 	}
 
 	/**
@@ -244,7 +312,8 @@ public class RentACatTest {
 
 	@Test
 	public void testReturnCatFailureNumCats0() {
-		// TODO
+		RentACat r = RentACat.createInstance();
+    	assertFalse(r.returnCat(2));
 	}
 
 	/**
@@ -264,8 +333,37 @@ public class RentACatTest {
 	 * testBadgerPlayCalled method.
 	 */
 
-	@Test
-	public void testReturnCatNumCats3() {
-		// TODO
-	}
+	 @Test
+	 public void testReturnCatNumCats3() {
+		 // Instantiate the RentACat instance
+		 RentACat r = RentACat.createInstance();
+	 
+		 // Create mock cats
+		 Cat c1 = mock(Cat.class);
+		 Cat c2 = mock(Cat.class);
+		 Cat c3 = mock(Cat.class);
+	 
+		 // Specify return values for getId() for our mocks
+		 when(c1.getId()).thenReturn(1);
+		 when(c2.getId()).thenReturn(2);
+		 when(c3.getId()).thenReturn(3);
+	 
+		 // Specify that c2 is rented
+		 when(c2.getRented()).thenReturn(true);
+	 
+		 // Add cats to RentACat instance
+		 r.addCat(c1);
+		 r.addCat(c2);
+		 r.addCat(c3);
+	 
+		 // 2. Execute
+		 boolean result = r.returnCat(2);
+	 
+		 // 3. Verify
+		 assertTrue(result); // Postcondition 1: Return value is true
+		 verify(c2, times(1)).returnCat(); // Postcondition 2: c2.returnCat() is called exactly once
+		 verify(c1, never()).returnCat();  // Postcondition 3: c1.returnCat() is never called
+		 verify(c3, never()).returnCat();  // Postcondition 3: c3.returnCat() is never called
+	 }
+	 
 }

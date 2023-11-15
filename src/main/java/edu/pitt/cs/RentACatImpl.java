@@ -17,10 +17,15 @@ public class RentACatImpl implements RentACat {
 	 * @return true if cat exists and was rented out, false otherwise
 	 */
 
-	public boolean returnCat(int id) {
-		// TODO
+	 public boolean returnCat(int id) {
+		Cat cat = getCat(id);
+		if (cat != null && cat.getRented()) {
+			cat.returnCat();
+			return true;
+		}
 		return false;
 	}
+	
 
 	/**
 	 * Rent a cat. This should call the .rentCat() method on the cat for the
@@ -32,10 +37,15 @@ public class RentACatImpl implements RentACat {
 	 * @return true if cat exists and was not rented out, false otherwise
 	 */
 
-	public boolean rentCat(int id) {
-		// TODO
+	 public boolean rentCat(int id) {
+		Cat cat = getCat(id);
+		if (cat != null && !cat.getRented()) {
+			cat.rentCat();
+			return true;
+		}
 		return false;
 	}
+	
 
 	/**
 	 * Create a String list from the list of cats using the .toString() method of
@@ -47,10 +57,16 @@ public class RentACatImpl implements RentACat {
 	 * @return "\n"-delimited list of rentable cats
 	 */
 
-	public String listCats() {
-		// TODO
-		return "WRITE CODE FOR THIS";
+	 public String listCats() {
+		StringBuilder catList = new StringBuilder();
+		for (Cat cat : cats) {
+			if (!cat.getRented()) {
+				catList.append(cat.toString()).append("\n");
+			}
+		}
+		return catList.toString();
 	}
+	
 
 	/**
 	 * Given an id, return true if the cat exists in the list of cats or false if
@@ -61,10 +77,10 @@ public class RentACatImpl implements RentACat {
 	 * @return true if cat exists in list, false otherwise
 	 */
 
-	public boolean catExists(int id) {
-		// TODO
-		return false;
+	 public boolean catExists(int id) {
+		return getCat(id) != null;
 	}
+	
 
 	/**
 	 * Given an id, return true if the cat exists in the list of cats and is
